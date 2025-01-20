@@ -1,0 +1,49 @@
+POST http://localhost:8000/cars
+Content-Type: application/json
+
+{
+    "year": "2024",
+    "make":"Toyota",
+    "model":"Corolla",
+    
+}
+
+###
+
+
+POST http://localhost:8000/cars
+Content-Type: application/json
+
+{
+    "year": 2024,
+    "make":"Toyota",
+    "model":"Corolla"
+    
+}
+
+
+###
+
+
+GET http://localhost:8000/cars
+
+
+
+###
+
+
+PATCH http://localhost:8000/cars/678ed4792fea2f3dc3bb9014
+Content-Type: application/json
+
+{
+    "year": 2024,
+    "make":"Toyota",
+    "model":"Camry"
+    
+}
+
+
+###
+
+
+DELETE http://localhost:8000/cars/678ed4792fea2f3dc3bb9014
