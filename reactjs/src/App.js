@@ -1,51 +1,17 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import CarDetails from "./pages/CarDetails";
 
 function App() {
-  const [cars, setCars] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const API_BASE =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:8000/api/v1"
-      : process.env.REACT_APP_BASE_URL;
-
-  useEffect(() => {
-    let ignore = false;
-    if (!ignore) {
-      getCars();
-    }
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  const getCars = async () => {
-    setLoading(true);
-    try {
-      await fetch(`${API_BASE}/cars`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log({ data });
-          setCars(data);
-        });
-    } catch (error) {
-      setError(error.message || "Unexpected Error");
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Cars</h1>
-        <ul>
-          <li>Cars</li>
-        </ul>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/car/:id" element={<CarDetails />} />
+      </Routes>
+    </Router>
   );
 }
 

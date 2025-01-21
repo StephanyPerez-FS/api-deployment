@@ -26,6 +26,48 @@
 
 .App-link {
   color: #61dafb;
+  text-decoration: none;
+}
+
+.App-link:hover {
+  text-decoration: underline;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.loading,
+.error,
+.no-cars {
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+.car-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.car-item {
+  background: #3b3f45;
+  padding: 15px;
+  border: 1px solid #555;
+  border-radius: 5px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.car-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes App-logo-spin {
