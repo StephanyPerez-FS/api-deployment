@@ -1,35 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import AuthService from "../services/auth.service";
+import CarsService from "../services/cars.service";
 
 function Home() {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const API_BASE =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:8000/api/v1"
-      : process.env.REACT_APP_BASE_URL;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCars = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${API_BASE}/cars`);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setCars(data);
-      } catch (err) {
-        setError(err.message || "Unexpected Error");
-      } finally {
-        setLoading(false);
-      }
-    };
+    const user = AuthService.getCurrentUser();
 
-    fetchCars();
-  }, [API_BASE]);
+    if (user && user.token) {
+      CarsService.getAllPrivateCars().then(
+        (response) => {
+          console.log("API Response:", response.data);
+          setCars(response.data);
+        },
+        (error) => {
+          console.error("Secured Page Error: ", error.response);
+
+          if (error.response && error.response.status === 401) {
+            AuthService.logout();
+            navigate("/signup");
+          }
+        }
+      );
+    } else {
+      console.warn("No user token found, redirecting to login.");
+      navigate("/signup");
+    }
+  }, []);
 
   const styles = {
     container: {
@@ -80,7 +84,7 @@ function Home() {
         {error && <p style={{ color: "red" }}>{error}</p>}
 
         {/* Display Car List */}
-        {!loading && !error && cars.length > 0 ? (
+        {!loading && !error && Array.isArray(cars) && cars.length > 0 ? (
           <ul style={styles.carList}>
             {cars.map((car) => (
               <li key={car._id} style={styles.carItem}>
@@ -97,6 +101,12 @@ function Home() {
         {/* Link to Dashboard */}
         <Link to="/dashboard" style={styles.dashboardLink}>
           Add a New Car
+        </Link>
+        <Link to="/login" style={styles.dashboardLink}>
+          Log in
+        </Link>
+        <Link to="/signup" style={styles.dashboardLink}>
+          Sign Up
         </Link>
       </header>
     </div>
