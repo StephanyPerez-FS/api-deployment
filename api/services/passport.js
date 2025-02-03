@@ -11,18 +11,19 @@ const localOptions = {
 };
 
 const localStrategy = new LocalStrategy(
-  localOptions,
+  { usernameField: "email" },
   async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
-
       if (!user) {
-        return done(null, false);
+        console.log("User not found");
+        return done(null, false, { message: "User not found" });
       }
 
-      const isMatch = await user.comparePassword(password);
+      const isMatch = await user.comparePassword(password); // ✅ Use updated comparePassword
       if (!isMatch) {
-        return done(null, false);
+        console.log("Incorrect password");
+        return done(null, false, { message: "Incorrect password" });
       }
 
       return done(null, user);
@@ -32,7 +33,6 @@ const localStrategy = new LocalStrategy(
   }
 );
 
-// ✅ Fix JWT Extraction
 const jwtOptions = {
   secretOrKey: config.secret,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
